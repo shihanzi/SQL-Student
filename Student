@@ -1,4 +1,60 @@
- public bool updateStudent(int id,string fname, string lname, DateTime dob, string gender, string phone, string address, MemoryStream pic)
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+using System.Data.SqlClient;
+using System.Data;
+
+
+
+
+
+namespace Student_Management_System
+{
+    class STUDENT
+    {
+        MY_DB db = new MY_DB();
+
+        //Create a Method to add Student to the database.
+        public bool insertStudent(string fname, string lname, DateTime dob, string gender, string phone, string address, MemoryStream pic)
+        {
+            SqlCommand command = new SqlCommand("INSERT INTO [dbo].[Students]([Firstname],[Lastname],[DOB],[Phone],[Address],[Gender],[Picture]) VALUES (@fn,@ln,@dob,@gdr,@phn,@adrs,@pic) ", db.GetConnection);
+
+
+            command.Parameters.Add("@fn", System.Data.SqlDbType.VarChar).Value = fname;
+            command.Parameters.Add("@ln", System.Data.SqlDbType.VarChar).Value = lname;
+            command.Parameters.Add("@dob", System.Data.SqlDbType.DateTime).Value = dob;
+            command.Parameters.Add("@gdr", System.Data.SqlDbType.VarChar).Value = gender;
+            command.Parameters.Add("@phn", System.Data.SqlDbType.VarChar).Value = phone;
+            command.Parameters.Add("@adrs", System.Data.SqlDbType.Text).Value = address;
+            command.Parameters.Add("@pic", System.Data.SqlDbType.Image).Value = pic.ToArray();
+            db.OpenConnection();
+
+            if (command.ExecuteNonQuery() == 1)
+            {
+
+                db.CloseConnection();
+                return true;
+
+            }
+            else
+            {
+                return false;
+            }
+        }
+        //Create a Method to return a table of student data.
+        public DataTable getStudents (SqlCommand command)
+        {
+            command.Connection = db.GetConnection;
+            SqlDataAdapter adapter = new SqlDataAdapter(command);
+            DataTable table = new DataTable();
+            adapter.Fill(table);
+            return table;
+        }
+
+        public bool updateStudent(int id,string fname, string lname, DateTime dob, string gender, string phone, string address, MemoryStream pic)
         {
             SqlCommand command = new SqlCommand("update Students set Firstname = '" + fname + "',Lastname = '" + lname + "',DOB = '" + dob + "',Gender = '" + gender + "',Phone = '" + phone+ "',Address = '" + address+"',Picture = '"+ pic +  "'where Id = '" + id + "'", db.GetConnection);
 
@@ -23,3 +79,10 @@
             {
                 return false;
             }
+
+        }
+
+        }
+}
+
+
