@@ -1,0 +1,25 @@
+ public bool updateStudent(int id,string fname, string lname, DateTime dob, string gender, string phone, string address, MemoryStream pic)
+        {
+            SqlCommand command = new SqlCommand("update Students set Firstname = '" + fname + "',Lastname = '" + lname + "',DOB = '" + dob + "',Gender = '" + gender + "',Phone = '" + phone+ "',Address = '" + address+"',Picture = '"+ pic +  "'where Id = '" + id + "'", db.GetConnection);
+
+            command.Parameters.Add("@id", System.Data.SqlDbType.VarChar).Value = id;
+            command.Parameters.Add("@fn", System.Data.SqlDbType.VarChar).Value = fname;
+            command.Parameters.Add("@ln", System.Data.SqlDbType.VarChar).Value = lname;
+            command.Parameters.Add("@dob", System.Data.SqlDbType.DateTime).Value = dob;
+            command.Parameters.Add("@gdr", System.Data.SqlDbType.VarChar).Value = gender;
+            command.Parameters.Add("@phn", System.Data.SqlDbType.VarChar).Value = phone;
+            command.Parameters.Add("@adrs", System.Data.SqlDbType.Text).Value = address;
+            command.Parameters.Add("@pic", System.Data.SqlDbType.Image).Value = pic.ToArray();
+            db.OpenConnection();
+
+            if (command.ExecuteNonQuery() == 1)
+            {
+
+                db.CloseConnection();
+                return true;
+
+            }
+            else
+            {
+                return false;
+            }
